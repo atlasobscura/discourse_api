@@ -8,7 +8,7 @@ module DiscourseApi
       def create_topic(args={})
         args = API.params(args)
                   .required(:title, :raw)
-                  .optional(:skip_validations, :category, :auto_track, :created_at, :api_username)
+                  .optional(:skip_validations, :category, :auto_track, :created_at, :api_username, :featured_link)
         post("/posts", args.to_h)
       end
 
