@@ -61,8 +61,8 @@ module DiscourseApi
         post("/admin/users/invite_admin", args)
       end
 
-      def list_users(type)
-        response = get("admin/users/list/#{type}.json")
+      def list_users(type, params = {})
+        response = get("admin/users/list/#{type}.json", params)
         response[:body]
       end
 
@@ -81,8 +81,8 @@ module DiscourseApi
         response[:body]['user']
       end
 
-      def suspend(user_id, days, reason)
-        put("/admin/users/#{user_id}/suspend", {duration: days, reason: reason})
+      def suspend(user_id, suspend_until, reason)
+        put("/admin/users/#{user_id}/suspend", {suspend_until: suspend_until, reason: reason})
       end
 
       def unsuspend(user_id)
@@ -91,6 +91,11 @@ module DiscourseApi
 
       def delete_user(user_id, delete_posts = false)
         delete("/admin/users/#{user_id}.json?delete_posts=#{delete_posts}")
+      end
+
+      def check_username(username)
+        response = get("/users/check_username.json?username=#{CGI.escape(username)}")
+        response[:body]
       end
     end
   end
