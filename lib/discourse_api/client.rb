@@ -25,7 +25,7 @@ require 'discourse_api/api/site_settings'
 
 module DiscourseApi
   class Client
-    attr_accessor :api_key
+    attr_accessor :api_key, :timeout, :open_timeout
     attr_reader :host, :api_username
 
     include DiscourseApi::API::Categories
@@ -54,6 +54,8 @@ module DiscourseApi
       @api_key      = api_key
       @api_username = api_username
       @use_relative = check_subdirectory(host)
+      @timeout      = timeout
+      @open_timeout = open_timeout
     end
 
     def api_username=(api_username)
@@ -115,6 +117,9 @@ module DiscourseApi
         conn.request :multipart
         # Convert request params to "www-form-encoded"
         conn.request :url_encoded
+        # Pass optional open and response timeouts
+        conn.options[:open_timeout] = @open_timeout unless @open_timeout.nil?
+        conn.options[:timeout] = @timeout unless @timeout.nil?
         # Parse responses as JSON
         conn.use FaradayMiddleware::ParseJson, content_type: 'application/json'
         # Use Faraday's default HTTP adapter
